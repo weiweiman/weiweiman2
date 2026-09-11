@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08111f">
+<title>技術分析｜台股當沖 Pro</title>
+<style>
+:root{color-scheme:dark;--bg:#06101e;--panel:#0f1a2b;--line:#24344b;--text:#f8fafc;--muted:#93a4ba;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--brand:#14b8a6;--blue:#38bdf8}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.wrap{max-width:820px;margin:auto;padding:14px}.head{display:flex;align-items:center;gap:10px;margin-bottom:12px}.back{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--line);border-radius:12px;color:#fff;text-decoration:none;background:#101c2e}.head h1{font-size:19px;margin:0}.head small{display:block;color:var(--muted);margin-top:2px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:12px}.grid{display:grid;gap:10px}.controls{grid-template-columns:1.3fr .8fr}.input,select,button{width:100%;min-height:46px;border-radius:12px;border:1px solid var(--line);background:#101d30;color:#f8fafc;padding:0 12px;font:inherit}button{font-weight:800;cursor:pointer}.primary{background:linear-gradient(135deg,#14b8a6,#0f766e);border:0}.secondary{background:#142238}.mtf{grid-template-columns:1fr 1fr;margin-top:10px}.status{display:flex;align-items:center;justify-content:space-between;gap:10px}.badge{padding:7px 10px;border-radius:999px;font-size:12px;border:1px solid var(--line);background:#101d30}.big{font-size:30px;font-weight:900;margin:8px 0 2px}.muted{color:var(--muted);font-size:13px;line-height:1.55}.score{display:flex;align-items:flex-end;gap:10px}.score strong{font-size:38px;line-height:1}.score span{font-size:13px;color:var(--muted);padding-bottom:5px}.meter{height:10px;border-radius:999px;background:#17253a;overflow:hidden;margin-top:12px}.meter i{display:block;height:100%;width:50%;background:var(--brand);transition:.25s}.signal{font-size:20px;font-weight:900}.long{color:var(--green)}.short{color:var(--red)}.neutral{color:var(--amber)}.indicators{grid-template-columns:repeat(2,1fr)}.ind{background:#0b1727;border:1px solid var(--line);border-radius:14px;padding:12px}.ind b{display:block;font-size:13px;color:#cbd5e1}.ind strong{display:block;font-size:21px;margin-top:6px}.ind p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.45}.warn{border-color:#6b4a12;background:#2b200d;color:#fde68a}.ok{border-color:#165f55;background:#0b2827;color:#99f6e4}.bad{border-color:#6b2020;background:#2b1111;color:#fecaca}.details{white-space:pre-line;line-height:1.65;color:#dbe7f5;font-size:13px}.tfrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.tf{background:#0b1727;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}.tf b{font-size:12px;color:var(--muted)}.tf strong{display:block;font-size:16px;margin-top:5px}.foot{font-size:11px;color:#7f91a8;line-height:1.55;margin-top:12px}.loading{opacity:.65;pointer-events:none}@media(min-width:700px){.indicators{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <div class="head"><a class="back" href="./">←</a><div><h1>技術分析決策引擎</h1><small>KD · RSI · MACD · EMA · 多週期共振</small></div></div>
+
+  <section class="card">
+    <div class="grid controls">
+      <input id="code" class="input" inputmode="numeric" placeholder="股票代號，例如 2344" value="2344">
+      <select id="interval"><option value="5m">5 分 K</option><option value="15m">15 分 K</option><option value="60m">60 分 K</option><option value="1d">日 K</option></select>
+    </div>
+    <div class="grid mtf"><button id="analyze" class="primary">分析單一週期</button><button id="multi" class="secondary">5/15/60 分共振</button></div>
+  </section>
+
+  <div id="notice" class="card warn" style="display:none"></div>
+
+  <section class="card" id="resultCard">
+    <div class="status"><div><div class="muted" id="symbol">尚未分析</div><div class="big" id="price">—</div></div><div id="fresh" class="badge">等待資料</div></div>
+    <div class="score"><strong id="score">—</strong><span>/ 100</span></div>
+    <div id="signal" class="signal neutral">觀望</div>
+    <div class="meter"><i id="meter"></i></div>
+    <div class="muted" id="summary" style="margin-top:10px">輸入股票代號後執行分析。</div>
+  </section>
+
+  <section class="card">
+    <div class="grid indicators">
+      <div class="ind"><b>KD (9,3,3)</b><strong id="kd">—</strong><p id="kdText">等待資料</p></div>
+      <div class="ind"><b>RSI (14)</b><strong id="rsi">—</strong><p id="rsiText">等待資料</p></div>
+      <div class="ind"><b>MACD (12,26,9)</b><strong id="macd">—</strong><p id="macdText">等待資料</p></div>
+      <div class="ind"><b>EMA 5 / 20</b><strong id="ema">—</strong><p id="emaText">等待資料</p></div>
+    </div>
+  </section>
+
+  <section class="card" id="tfCard" style="display:none">
+    <b>多週期共振</b>
+    <div class="tfrow"><div class="tf"><b>5 分</b><strong id="tf5">—</strong></div><div class="tf"><b>15 分</b><strong id="tf15">—</strong></div><div class="tf"><b>60 分</b><strong id="tf60">—</strong></div></div>
+    <div class="muted" id="tfSummary" style="margin-top:10px"></div>
+  </section>
+
+  <section class="card"><b>判斷說明</b><div id="details" class="details" style="margin-top:8px">KD 看短線轉折；RSI 看強弱區間；MACD 權重最高，用來確認趨勢方向；EMA5/20 判斷短中期排列。單一指標過熱或超賣不直接等於反轉，會搭配其他指標與多週期一致性判斷。</div></section>
+  <div class="foot">技術指標使用 Yahoo Finance Chart K 線做輔助計算；可能存在延遲或來源中斷。即時成交價、處置股與漲停狀態仍以原篩選台／交易所資料為準。若資料時間過舊，本頁會標示，不會把舊資料當成即時訊號。</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const app=$('app'), notice=$('notice');
+function fmt(n,d=2){return Number.isFinite(n)?n.toFixed(d):'—'}
+function setNotice(msg,cls='warn'){notice.style.display='block';notice.className='card '+cls;notice.textContent=msg}
+function clearNotice(){notice.style.display='none'}
+function emaSeries(v,p){const out=Array(v.length).fill(null);if(v.length<p)return out;let s=0;for(let i=0;i<p;i++)s+=v[i];let e=s/p;out[p-1]=e;const a=2/(p+1);for(let i=p;i<v.length;i++){e=(v[i]-e)*a+e;out[i]=e}return out}
+function rsiSeries(c,p=14){const out=Array(c.length).fill(null);if(c.length<=p)return out;let g=0,l=0;for(let i=1;i<=p;i++){const d=c[i]-c[i-1];if(d>=0)g+=d;else l-=d}g/=p;l/=p;out[p]=l===0?100:100-(100/(1+g/l));for(let i=p+1;i<c.length;i++){const d=c[i]-c[i-1];g=(g*(p-1)+Math.max(d,0))/p;l=(l*(p-1)+Math.max(-d,0))/p;out[i]=l===0?100:100-(100/(1+g/l))}return out}
+function kdSeries(h,l,c,p=9){let K=50,D=50;const out=[];for(let i=0;i<c.length;i++){if(i<p-1){out.push({k:null,d:null});continue}let hh=-Infinity,ll=Infinity;for(let j=i-p+1;j<=i;j++){hh=Math.max(hh,h[j]);ll=Math.min(ll,l[j])}const r=hh===ll?50:(c[i]-ll)/(hh-ll)*100;K=K*2/3+r/3;D=D*2/3+K/3;out.push({k:K,d:D})}return out}
+function calc(bars){const c=bars.map(x=>x.c),h=bars.map(x=>x.h),l=bars.map(x=>x.l);const kd=kdSeries(h,l,c),rsi=rsiSeries(c),e5=emaSeries(c,5),e12=emaSeries(c,12),e20=emaSeries(c,20),e26=emaSeries(c,26);const dif=c.map((_,i)=>e12[i]!=null&&e26[i]!=null?e12[i]-e26[i]:null);const valid=dif.map(x=>x).filter(x=>x!=null);const deaValid=emaSeries(valid,9);const dea=Array(c.length).fill(null);let q=0;for(let i=0;i<dif.length;i++)if(dif[i]!=null){dea[i]=deaValid[q];q++}const hist=dif.map((x,i)=>x!=null&&dea[i]!=null?x-dea[i]:null);const i=c.length-1,p=i-1;const K=kd[i]?.k,D=kd[i]?.d,pk=kd[p]?.k,pd=kd[p]?.d,R=rsi[i],DIF=dif[i],DEA=dea[i],H=hist[i],PH=hist[p],E5=e5[i],E20=e20[i];let score=0,parts=[];
+let ks=0;if(K!=null&&D!=null){const gold=pk!=null&&pd!=null&&pk<=pd&&K>D,dead=pk!=null&&pd!=null&&pk>=pd&&K<D;if(gold)ks=1;else if(dead)ks=-1;else ks=K>D?0.65:K<D?-0.65:0;if(gold&&K<30)ks=1;if(dead&&K>70)ks=-1;score+=ks*25;parts.push(ks>0?'KD多':'KD空')}
+let rs=0;if(R!=null){rs=R>=55?1:R<=45?-1:0;score+=rs*20;parts.push(rs>0?'RSI強':'RSI弱')}
+let ms=0;if(DIF!=null&&DEA!=null){ms=DIF>DEA?0.7:DIF<DEA?-0.7:0;if(H!=null&&PH!=null){if(H>0&&H>PH)ms=1;if(H<0&&H<PH)ms=-1}if(DIF>0&&ms>0)ms=Math.min(1,ms+.15);if(DIF<0&&ms<0)ms=Math.max(-1,ms-.15);score+=ms*35;parts.push(ms>0?'MACD多':'MACD空')}
+let es=0;if(E5!=null&&E20!=null){es=E5>E20?1:E5<E20?-1:0;score+=es*20;parts.push(es>0?'EMA多排':'EMA空排')}
+score=Math.max(-100,Math.min(100,Math.round(score)));let label='觀望',cls='neutral';if(score>=60){label='強多';cls='long'}else if(score>=25){label='偏多';cls='long'}else if(score<=-60){label='強空';cls='short'}else if(score<=-25){label='偏空';cls='short'}const sig=[ks,rs,ms,es].filter(x=>x!==0),dir=score>0?1:score<0?-1:0,agree=dir?sig.filter(x=>Math.sign(x)===dir).length:0;let risk='';if(R>=70)risk='RSI 過熱，偏多也不宜追高。';else if(R<=30)risk='RSI 超賣，偏空也要防急彈。';else if(K>=80&&D>=80)risk='KD 高檔鈍化／過熱，留意轉折。';else if(K<=20&&D<=20)risk='KD 低檔鈍化／超賣，留意反彈。';return{price:c[i],K,D,pk,pd,R,DIF,DEA,H,PH,E5,E20,score,label,cls,agree,total:sig.length,risk,parts}}
+function intervalRange(iv){return iv==='5m'?'5d':iv==='15m'?'5d':iv==='60m'?'1mo':'6mo'}
+async function fetchBars(code,iv){const list=code.includes('.')?[code]:[code+'.TW',code+'.TWO'];let lastErr;for(const s of list){try{const u=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s)}?interval=${iv}&range=${intervalRange(iv)}&includePrePost=false&events=div%2Csplits`;const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json(),x=j?.chart?.result?.[0];if(!x)throw new Error(j?.chart?.error?.description||'沒有資料');const q=x.indicators?.quote?.[0],ts=x.timestamp||[];const bars=[];for(let i=0;i<ts.length;i++){const o=q.open?.[i],h=q.high?.[i],l=q.low?.[i],c=q.close?.[i];if([o,h,l,c].every(Number.isFinite))bars.push({t:ts[i]*1000,o,h,l,c})}if(bars.length<40)throw new Error('K線筆數不足');return{symbol:x.meta?.symbol||s,bars,meta:x.meta||{}}}catch(e){lastErr=e}}throw lastErr||new Error('無法取得資料')}
+function staleMs(iv){return iv==='5m'?10*60e3:iv==='15m'?25*60e3:iv==='60m'?90*60e3:36*60*60e3}
+function render(data,iv){const a=calc(data.bars),last=data.bars.at(-1),age=Date.now()-last.t;clearNotice();$('symbol').textContent=`${data.symbol} · ${iv} · ${new Date(last.t).toLocaleString('zh-TW')}`;$('price').textContent=fmt(a.price,2);$('score').textContent=a.score>0?'+'+a.score:String(a.score);$('signal').textContent=a.label;$('signal').className='signal '+a.cls;$('meter').style.width=((a.score+100)/2)+'%';$('meter').style.background=a.score>=25?'var(--green)':a.score<=-25?'var(--red)':'var(--amber)';$('fresh').textContent=age>staleMs(iv)?'資料偏舊':'資料可用';$('fresh').className='badge '+(age>staleMs(iv)?'bad':'ok');if(age>staleMs(iv))setNotice('K 線資料時間偏舊，以下只作歷史技術結構參考，不視為即時做多／做空訊號。','warn');$('summary').textContent=`${a.label}｜指標同向 ${a.agree}/${a.total||4}。${a.risk||'目前未見明顯過熱／超賣警示。'}`;$('kd').textContent=`K ${fmt(a.K,1)} / D ${fmt(a.D,1)}`;const cross=a.pk!=null&&a.pd!=null?(a.pk<=a.pd&&a.K>a.D?'黃金交叉':a.pk>=a.pd&&a.K<a.D?'死亡交叉':a.K>a.D?'K>D 多方':'K<D 空方'):'—';$('kdText').textContent=cross;$('rsi').textContent=fmt(a.R,1);$('rsiText').textContent=a.R>=70?'過熱區':a.R>=55?'強勢區':a.R<=30?'超賣區':a.R<=45?'弱勢區':'中性區';$('macd').textContent=`${fmt(a.DIF,3)} / ${fmt(a.DEA,3)}`;$('macdText').textContent=(a.DIF>a.DEA?'DIF > Signal':'DIF < Signal')+(a.H!=null?'｜柱 '+fmt(a.H,3):'');$('ema').textContent=`${fmt(a.E5,2)} / ${fmt(a.E20,2)}`;$('emaText').textContent=a.E5>a.E20?'EMA5 > EMA20，多頭排列':'EMA5 < EMA20，空頭排列';$('details').textContent=`綜合分數 ${a.score}：${a.label}\nKD：${cross}\nRSI：${fmt(a.R,1)}\nMACD：DIF ${fmt(a.DIF,3)}、Signal ${fmt(a.DEA,3)}、Histogram ${fmt(a.H,3)}\nEMA：5=${fmt(a.E5,2)}、20=${fmt(a.E20,2)}\n${a.risk||'指標未出現明顯極端區。'}`;return a}
+async function runOne(){const code=$('code').value.trim(),iv=$('interval').value;if(!code){setNotice('請輸入股票代號');return}app.classList.add('loading');try{const d=await fetchBars(code,iv);render(d,iv);$('tfCard').style.display='none'}catch(e){setNotice('技術資料取得失敗：'+e.message+'。不會以假資料補值。','bad')}finally{app.classList.remove('loading')}}
+async function runMulti(){const code=$('code').value.trim();if(!code){setNotice('請輸入股票代號');return}app.classList.add('loading');clearNotice();try{const ivs=['5m','15m','60m'];const rs=await Promise.all(ivs.map(iv=>fetchBars(code,iv).then(d=>({iv,d,a:calc(d.bars)}))));$('tfCard').style.display='block';for(const x of rs){const id=x.iv==='5m'?'tf5':x.iv==='15m'?'tf15':'tf60';$(id).textContent=`${x.a.label} ${x.a.score>0?'+':''}${x.a.score}`;$(id).className=x.a.cls}const weights={'5m':.5,'15m':.3,'60m':.2};const total=Math.round(rs.reduce((s,x)=>s+x.a.score*weights[x.iv],0));const dirs=rs.map(x=>Math.sign(x.a.score)).filter(Boolean);const same=dirs.length===3&&dirs.every(d=>d===dirs[0]);$('tfSummary').textContent=`共振分數 ${total>0?'+':''}${total}。${same?'三週期同向，趨勢確認度較高。':'週期尚未完全同向，避免只看單一短線訊號。'}`;render(rs[0].d,'5m');$('tfCard').style.display='block';$('tfSummary').textContent=`共振分數 ${total>0?'+':''}${total}。${same?'5/15/60 分三週期同向，趨勢確認度較高。':'5/15/60 分尚未完全同向，短線訊號需保守解讀。'}` }catch(e){setNotice('多週期資料取得失敗：'+e.message+'。不會用舊資料或假資料補值。','bad')}finally{app.classList.remove('loading')}}
+$('analyze').addEventListener('click',runOne);$('multi').addEventListener('click',runMulti);$('code').addEventListener('keydown',e=>{if(e.key==='Enter')runOne()});
+</script>
+</body>
+</html>
