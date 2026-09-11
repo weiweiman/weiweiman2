@@ -2,7 +2,7 @@
   "id": "./",
   "name": "台股即時當沖 Pro",
   "short_name": "台股當沖 Pro",
-  "description": "台股即時當沖篩選台手機 Pro 工作台",
+  "description": "台股即時當沖篩選與 KD RSI MACD 技術分析工作台",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -21,6 +21,13 @@
       "short_name": "即時篩選",
       "description": "直接開啟台股即時當沖篩選畫面",
       "url": "./?open=live",
+      "icons": [{"src":"./icon.svg","sizes":"any","type":"image/svg+xml"}]
+    },
+    {
+      "name": "KD RSI MACD 技術分析",
+      "short_name": "技術分析",
+      "description": "分析 KD、RSI、MACD、EMA 與多週期共振",
+      "url": "./technical.html",
       "icons": [{"src":"./icon.svg","sizes":"any","type":"image/svg+xml"}]
     }
   ]
