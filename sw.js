@@ -1,5 +1,5 @@
-const CACHE='tw-daytrade-pro-v2.0.0';
-const SHELL=['./','./index.html','./manifest.webmanifest','./icon.svg'];
+const CACHE='tw-daytrade-pro-v2.1.0';
+const SHELL=['./','./index.html','./technical.html','./manifest.webmanifest','./icon.svg'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)));
@@ -18,8 +18,8 @@ self.addEventListener('fetch',event=>{
   if(req.method!=='GET') return;
   const url=new URL(req.url);
 
-  // Never cache or synthesize external market/screener responses.
-  // If the live source is unavailable, the app must surface that state instead of stale quotes.
+  // Never cache external market, chart or screener responses.
+  // External finance data must always come from the network so stale bars are not silently reused.
   if(url.origin!==self.location.origin){
     event.respondWith(fetch(req));
     return;
@@ -30,10 +30,10 @@ self.addEventListener('fetch',event=>{
       fetch(req)
         .then(resp=>{
           const copy=resp.clone();
-          caches.open(CACHE).then(cache=>cache.put('./index.html',copy));
+          caches.open(CACHE).then(cache=>cache.put(req,copy));
           return resp;
         })
-        .catch(()=>caches.match('./index.html'))
+        .catch(()=>caches.match(req).then(r=>r||caches.match('./index.html')))
     );
     return;
   }
