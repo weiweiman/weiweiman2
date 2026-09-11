@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="台股當沖">
+  <title>台股即時當沖篩選台</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <style>
+    :root{color-scheme:dark;--bg:#0b1220;--card:#111827;--line:#243244;--text:#f8fafc;--muted:#94a3b8;--brand:#14b8a6;--brand2:#0f766e}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;background:linear-gradient(180deg,#07111f,#0b1220);color:var(--text);min-height:100vh}
+    .wrap{max-width:720px;margin:auto;padding:28px 18px 40px}.badge{display:inline-flex;gap:8px;align-items:center;padding:7px 10px;border:1px solid #1f766e;border-radius:999px;color:#99f6e4;font-size:13px;background:#0f2c2a}
+    h1{font-size:30px;line-height:1.2;margin:18px 0 8px}.sub{color:var(--muted);line-height:1.7}.card{margin-top:22px;background:rgba(17,24,39,.92);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+    .btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;border-radius:14px;border:0;font-weight:800;font-size:16px;text-decoration:none;cursor:pointer;margin-top:12px}.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:white}.secondary{background:#182235;color:#e2e8f0;border:1px solid #334155}
+    .steps{margin:16px 0 0;padding-left:22px;color:#cbd5e1;line-height:1.8}.small{font-size:13px;color:var(--muted);line-height:1.6;margin-top:14px}.status{display:flex;gap:10px;align-items:center}.dot{width:10px;height:10px;border-radius:50%;background:#22c55e;box-shadow:0 0 14px #22c55e}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <div class="badge">PWA 手機安裝版</div>
+  <h1>台股即時當沖篩選台</h1>
+  <div class="sub">安裝到 Android / iPhone 主畫面後，可像 App 一樣快速啟動。即時行情仍由原篩選台提供，避免把離線快取誤當成最新報價。</div>
+
+  <section class="card">
+    <div class="status"><span class="dot"></span><strong>原篩選台服務</strong></div>
+    <a id="launch" class="btn primary" href="https://tw-daytrade-screener.jgw0616.chatgpt.site">開啟即時篩選台</a>
+    <button id="install" class="btn secondary" hidden>安裝手機 App</button>
+    <button id="ios" class="btn secondary" hidden>iPhone 加入主畫面教學</button>
+    <div class="small">目前這個 PWA 是安全啟動器：它不儲存即時股價資料；盤中請以原篩選台顯示的資料時間為準。</div>
+  </section>
+
+  <section class="card">
+    <strong>安裝方式</strong>
+    <ol class="steps">
+      <li>Android：用 Chrome 開啟本頁，按「安裝手機 App」。</li>
+      <li>iPhone：用 Safari 開啟，按分享 →「加入主畫面」。</li>
+      <li>完成後桌面會出現「台股當沖」圖示。</li>
+    </ol>
+  </section>
+</main>
+<script>
+let deferredPrompt;
+const installBtn=document.getElementById('install');
+const iosBtn=document.getElementById('ios');
+const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(!standalone)installBtn.hidden=false;});
+installBtn.addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;installBtn.hidden=true;});
+if(isiOS&&!standalone){iosBtn.hidden=false;iosBtn.onclick=()=>alert('Safari：點底部「分享」→「加入主畫面」→「加入」。');}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));}
+</script>
+</body>
+</html>
