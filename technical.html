@@ -6,19 +6,19 @@
 <meta name="theme-color" content="#08111f">
 <title>TWSE 技術分析｜台股當沖 Pro</title>
 <style>
-:root{color-scheme:dark;--bg:#06101e;--panel:#0f1a2b;--line:#24344b;--text:#f8fafc;--muted:#93a4ba;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--brand:#14b8a6;--blue:#38bdf8}
+:root{color-scheme:dark;--bg:#06101e;--panel:#0f1a2b;--line:#24344b;--text:#f8fafc;--muted:#93a4ba;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--brand:#14b8a6}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
 .wrap{max-width:860px;margin:auto;padding:14px}.head{display:flex;align-items:center;gap:10px;margin-bottom:12px}.back{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--line);border-radius:12px;color:#fff;text-decoration:none;background:#101c2e}.head h1{font-size:19px;margin:0}.head small{display:block;color:var(--muted);margin-top:2px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:12px}.grid{display:grid;gap:10px}.controls{grid-template-columns:1.3fr .8fr}.input,select,button{width:100%;min-height:46px;border-radius:12px;border:1px solid var(--line);background:#101d30;color:#f8fafc;padding:0 12px;font:inherit}button{font-weight:800;cursor:pointer}.primary{background:linear-gradient(135deg,#14b8a6,#0f766e);border:0}.secondary{background:#142238}.mtf{grid-template-columns:1fr 1fr;margin-top:10px}.status{display:flex;align-items:center;justify-content:space-between;gap:10px}.badge{padding:7px 10px;border-radius:999px;font-size:12px;border:1px solid var(--line);background:#101d30}.badge.ok{border-color:#165f55;background:#0b2827;color:#99f6e4}.badge.bad{border-color:#6b2020;background:#2b1111;color:#fecaca}.big{font-size:30px;font-weight:900;margin:8px 0 2px}.muted{color:var(--muted);font-size:13px;line-height:1.55}.score{display:flex;align-items:flex-end;gap:10px}.score strong{font-size:38px;line-height:1}.score span{font-size:13px;color:var(--muted);padding-bottom:5px}.meter{height:10px;border-radius:999px;background:#17253a;overflow:hidden;margin-top:12px}.meter i{display:block;height:100%;width:50%;background:var(--brand);transition:.25s}.signal{font-size:20px;font-weight:900}.long{color:var(--green)}.short{color:var(--red)}.neutral{color:var(--amber)}.indicators{grid-template-columns:repeat(2,1fr)}.ind{background:#0b1727;border:1px solid var(--line);border-radius:14px;padding:12px}.ind b{display:block;font-size:13px;color:#cbd5e1}.ind strong{display:block;font-size:21px;margin-top:6px}.ind p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.45}.warn{border-color:#6b4a12;background:#2b200d;color:#fde68a}.okbox{border-color:#165f55;background:#0b2827;color:#99f6e4}.badbox{border-color:#6b2020;background:#2b1111;color:#fecaca}.details{white-space:pre-line;line-height:1.65;color:#dbe7f5;font-size:13px}.tfrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.tf{background:#0b1727;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}.tf b{font-size:12px;color:var(--muted)}.tf strong{display:block;font-size:16px;margin-top:5px}.foot{font-size:11px;color:#7f91a8;line-height:1.55;margin-top:12px}.loading{opacity:.6;pointer-events:none}.sourcebox{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sourcebox b{font-size:14px}.sourcebox .muted{flex:1}.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}@media(min-width:700px){.indicators{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
 <main class="wrap" id="app">
-  <div class="head"><a class="back" href="./">←</a><div><h1>TWSE 技術分析決策引擎</h1><small>KD · RSI · MACD · EMA · 多週期共振</small></div></div>
+  <div class="head"><a class="back" href="./">←</a><div><h1>TWSE 技術分析決策引擎</h1><small>v2.2 · KD · RSI · MACD · EMA · 官方資料</small></div></div>
 
   <section class="card sourcebox">
     <span class="dot"></span><b>資料來源：臺灣證券交易所 TWSE</b>
-    <span id="providerBadge" class="badge ok">TWSE ONLY</span>
-    <div class="muted">Yahoo 已停用。即時價走 TWSE MIS；技術 K 線由 TWSE 官方圖表資料聚合。非 TWSE 回傳不計算訊號。</div>
+    <span class="badge ok">TWSE ONLY</span>
+    <div class="muted">不使用 Yahoo／Google。即時價走 TWSE MIS；日 K 走 TWSE STOCK_DAY。分時 K 僅在 TWSE MIS 實際提供時才計算。</div>
   </section>
 
   <section class="card">
@@ -31,7 +31,7 @@
 
   <div id="notice" class="card warn" style="display:none"></div>
 
-  <section class="card" id="resultCard">
+  <section class="card">
     <div class="status"><div><div class="muted" id="symbol">尚未分析</div><div class="big" id="price">—</div></div><div id="fresh" class="badge">等待資料</div></div>
     <div class="score"><strong id="score">—</strong><span>/ 100</span></div>
     <div id="signal" class="signal neutral">觀望</div>
@@ -39,14 +39,12 @@
     <div class="muted" id="summary" style="margin-top:10px">輸入上市股票代號後執行分析。</div>
   </section>
 
-  <section class="card">
-    <div class="grid indicators">
-      <div class="ind"><b>KD (9,3,3)</b><strong id="kd">—</strong><p id="kdText">等待資料</p></div>
-      <div class="ind"><b>RSI (14)</b><strong id="rsi">—</strong><p id="rsiText">等待資料</p></div>
-      <div class="ind"><b>MACD (12,26,9)</b><strong id="macd">—</strong><p id="macdText">等待資料</p></div>
-      <div class="ind"><b>EMA 5 / 20</b><strong id="ema">—</strong><p id="emaText">等待資料</p></div>
-    </div>
-  </section>
+  <section class="card"><div class="grid indicators">
+    <div class="ind"><b>KD (9,3,3)</b><strong id="kd">—</strong><p id="kdText">等待資料</p></div>
+    <div class="ind"><b>RSI (14)</b><strong id="rsi">—</strong><p id="rsiText">等待資料</p></div>
+    <div class="ind"><b>MACD (12,26,9)</b><strong id="macd">—</strong><p id="macdText">等待資料</p></div>
+    <div class="ind"><b>EMA 5 / 20</b><strong id="ema">—</strong><p id="emaText">等待資料</p></div>
+  </div></section>
 
   <section class="card" id="tfCard" style="display:none">
     <b>5 / 15 / 60 分多週期共振</b>
@@ -54,53 +52,29 @@
     <div class="muted" id="tfSummary" style="margin-top:10px"></div>
   </section>
 
-  <section class="card"><b>判斷邏輯</b><div id="details" class="details" style="margin-top:8px">KD 25%：短線轉折與高低檔。\nRSI 20%：55 以上偏強、45 以下偏弱。\nMACD 35%：DIF/Signal 與柱體擴張方向，權重最高。\nEMA5/20 20%：短中期排列。\n盤中 TWSE 資料超過 3 分鐘未更新、K 線少於 35 根或來源不是 TWSE，停止產生多空分數。</div></section>
-  <div class="foot">本頁不使用 Yahoo、Google 或其他行情源。TWSE MIS 為交易所基本市況報導來源；5/15/60 分 K 由 TWSE 圖表點位聚合，日 K 使用 TWSE 日資料。技術指標僅作交易決策輔助，不等於下單建議。</div>
+  <section class="card"><b>判斷邏輯</b><div class="details" style="margin-top:8px">KD 25%：短線轉折與高低檔。\nRSI 20%：55 以上偏強、45 以下偏弱。\nMACD 35%：DIF／Signal 與柱體方向，權重最高。\nEMA5/20 20%：短中期排列。\n任何週期 K 線少於 35 根、盤中 TWSE 報價超過 3 分鐘、或來源不是 TWSE，都停止該週期判斷。</div></section>
+  <div class="foot">TWSE MIS 的分時圖在盤後會關閉，因此盤後預設使用 TWSE 官方日 K。這是資料供應限制，不會改用其他來源補值。</div>
 </main>
 <script>
-const $=id=>document.getElementById(id), app=$('app'), notice=$('notice');
-const API='/api/twse';
+const $=id=>document.getElementById(id),app=$('app'),notice=$('notice'),API='/api/twse';
 function fmt(n,d=2){return Number.isFinite(n)?n.toFixed(d):'—'}
 function setNotice(msg,cls='warn'){notice.style.display='block';notice.className='card '+cls;notice.textContent=msg}
 function clearNotice(){notice.style.display='none'}
 function setBusy(on){app.classList.toggle('loading',on);$('analyze').disabled=on;$('multi').disabled=on}
+function taipeiParts(){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return p}
+function marketOpenTW(){const p=taipeiParts(),wd={Mon:1,Tue:2,Wed:3,Thu:4,Fri:5}[p.weekday]||0,mins=Number(p.hour)*60+Number(p.minute);return wd>=1&&wd<=5&&mins>=540&&mins<=815}
 function emaSeries(v,p){const out=Array(v.length).fill(null);if(v.length<p)return out;let s=0;for(let i=0;i<p;i++)s+=v[i];let e=s/p;out[p-1]=e;const a=2/(p+1);for(let i=p;i<v.length;i++){e=(v[i]-e)*a+e;out[i]=e}return out}
 function rsiSeries(c,p=14){const out=Array(c.length).fill(null);if(c.length<=p)return out;let g=0,l=0;for(let i=1;i<=p;i++){const d=c[i]-c[i-1];if(d>=0)g+=d;else l-=d}g/=p;l/=p;out[p]=l===0?100:100-(100/(1+g/l));for(let i=p+1;i<c.length;i++){const d=c[i]-c[i-1];g=(g*(p-1)+Math.max(d,0))/p;l=(l*(p-1)+Math.max(-d,0))/p;out[i]=l===0?100:100-(100/(1+g/l))}return out}
 function kdSeries(h,l,c,p=9){let K=50,D=50;const out=[];for(let i=0;i<c.length;i++){if(i<p-1){out.push({k:null,d:null});continue}let hh=-Infinity,ll=Infinity;for(let j=i-p+1;j<=i;j++){hh=Math.max(hh,h[j]);ll=Math.min(ll,l[j])}const r=hh===ll?50:(c[i]-ll)/(hh-ll)*100;K=K*2/3+r/3;D=D*2/3+K/3;out.push({k:K,d:D})}return out}
-function calc(bars){
-  if(!Array.isArray(bars)||bars.length<35)throw new Error(`K 線不足：${bars?.length||0} 根，至少需要 35 根`);
-  const c=bars.map(x=>Number(x.c)),h=bars.map(x=>Number(x.h)),l=bars.map(x=>Number(x.l));
-  if(c.some(x=>!Number.isFinite(x))||h.some(x=>!Number.isFinite(x))||l.some(x=>!Number.isFinite(x)))throw new Error('TWSE K 線欄位不完整');
-  const kd=kdSeries(h,l,c),rsi=rsiSeries(c),e5=emaSeries(c,5),e12=emaSeries(c,12),e20=emaSeries(c,20),e26=emaSeries(c,26);
-  const dif=c.map((_,i)=>e12[i]!=null&&e26[i]!=null?e12[i]-e26[i]:null),valid=dif.filter(x=>x!=null),deaValid=emaSeries(valid,9),dea=Array(c.length).fill(null);let q=0;
-  for(let i=0;i<dif.length;i++)if(dif[i]!=null){dea[i]=deaValid[q];q++}
-  const hist=dif.map((x,i)=>x!=null&&dea[i]!=null?x-dea[i]:null),i=c.length-1,p=i-1,K=kd[i]?.k,D=kd[i]?.d,pk=kd[p]?.k,pd=kd[p]?.d,R=rsi[i],DIF=dif[i],DEA=dea[i],H=hist[i],PH=hist[p],E5=e5[i],E20=e20[i];
-  let score=0,parts=[],ks=0,rs=0,ms=0,es=0;
-  if(K!=null&&D!=null){const gold=pk!=null&&pd!=null&&pk<=pd&&K>D,dead=pk!=null&&pd!=null&&pk>=pd&&K<D;if(gold)ks=1;else if(dead)ks=-1;else ks=K>D?.65:K<D?-.65:0;if(gold&&K<30)ks=1;if(dead&&K>70)ks=-1;score+=ks*25;parts.push(ks>0?'KD 多':'KD 空')}
-  if(R!=null){rs=R>=55?1:R<=45?-1:0;score+=rs*20;parts.push(rs>0?'RSI 強':rs<0?'RSI 弱':'RSI 中性')}
-  if(DIF!=null&&DEA!=null){ms=DIF>DEA?.7:DIF<DEA?-.7:0;if(H!=null&&PH!=null){if(H>0&&H>PH)ms=1;if(H<0&&H<PH)ms=-1}if(DIF>0&&ms>0)ms=Math.min(1,ms+.15);if(DIF<0&&ms<0)ms=Math.max(-1,ms-.15);score+=ms*35;parts.push(ms>0?'MACD 多':'MACD 空')}
-  if(E5!=null&&E20!=null){es=E5>E20?1:E5<E20?-1:0;score+=es*20;parts.push(es>0?'EMA 多排':'EMA 空排')}
-  score=Math.max(-100,Math.min(100,Math.round(score)));let label='觀望',cls='neutral';if(score>=60){label='強多';cls='long'}else if(score>=25){label='偏多';cls='long'}else if(score<=-60){label='強空';cls='short'}else if(score<=-25){label='偏空';cls='short'}
-  const sig=[ks,rs,ms,es].filter(x=>x!==0),dir=score>0?1:score<0?-1:0,agree=dir?sig.filter(x=>Math.sign(x)===dir).length:0;let risk='';
-  if(R>=70)risk='RSI 過熱：偏多但不宜追高。';else if(R<=30)risk='RSI 超賣：偏空但要防急彈。';else if(K>=80&&D>=80)risk='KD 高檔鈍化／過熱，留意轉折。';else if(K<=20&&D<=20)risk='KD 低檔鈍化／超賣，留意反彈。';
-  return{price:c[i],K,D,R,DIF,DEA,H,E5,E20,score,label,cls,agree,total:sig.length,risk,parts}
-}
-function marketOpenTW(){const d=new Date(),wd=d.getDay(),mins=d.getHours()*60+d.getMinutes();return wd>=1&&wd<=5&&mins>=540&&mins<=815}
+function calc(bars){if(!Array.isArray(bars)||bars.length<35)throw new Error(`K 線不足：${bars?.length||0} 根，至少需要 35 根`);const c=bars.map(x=>Number(x.c)),h=bars.map(x=>Number(x.h)),l=bars.map(x=>Number(x.l));if(c.some(x=>!Number.isFinite(x))||h.some(x=>!Number.isFinite(x))||l.some(x=>!Number.isFinite(x)))throw new Error('TWSE K 線欄位不完整');const kd=kdSeries(h,l,c),rsi=rsiSeries(c),e5=emaSeries(c,5),e12=emaSeries(c,12),e20=emaSeries(c,20),e26=emaSeries(c,26);const dif=c.map((_,i)=>e12[i]!=null&&e26[i]!=null?e12[i]-e26[i]:null),valid=dif.filter(x=>x!=null),deaValid=emaSeries(valid,9),dea=Array(c.length).fill(null);let q=0;for(let i=0;i<dif.length;i++)if(dif[i]!=null){dea[i]=deaValid[q];q++}const hist=dif.map((x,i)=>x!=null&&dea[i]!=null?x-dea[i]:null),i=c.length-1,p=i-1,K=kd[i]?.k,D=kd[i]?.d,pk=kd[p]?.k,pd=kd[p]?.d,R=rsi[i],DIF=dif[i],DEA=dea[i],H=hist[i],PH=hist[p],E5=e5[i],E20=e20[i];let score=0,parts=[],ks=0,rs=0,ms=0,es=0;if(K!=null&&D!=null){const gold=pk!=null&&pd!=null&&pk<=pd&&K>D,dead=pk!=null&&pd!=null&&pk>=pd&&K<D;if(gold)ks=1;else if(dead)ks=-1;else ks=K>D?.65:K<D?-.65:0;if(gold&&K<30)ks=1;if(dead&&K>70)ks=-1;score+=ks*25;parts.push(ks>0?'KD 多':'KD 空')}if(R!=null){rs=R>=55?1:R<=45?-1:0;score+=rs*20;parts.push(rs>0?'RSI 強':rs<0?'RSI 弱':'RSI 中性')}if(DIF!=null&&DEA!=null){ms=DIF>DEA?.7:DIF<DEA?-.7:0;if(H!=null&&PH!=null){if(H>0&&H>PH)ms=1;if(H<0&&H<PH)ms=-1}if(DIF>0&&ms>0)ms=Math.min(1,ms+.15);if(DIF<0&&ms<0)ms=Math.max(-1,ms-.15);score+=ms*35;parts.push(ms>0?'MACD 多':'MACD 空')}if(E5!=null&&E20!=null){es=E5>E20?1:E5<E20?-1:0;score+=es*20;parts.push(es>0?'EMA 多排':'EMA 空排')}score=Math.max(-100,Math.min(100,Math.round(score)));let label='觀望',cls='neutral';if(score>=60){label='強多';cls='long'}else if(score>=25){label='偏多';cls='long'}else if(score<=-60){label='強空';cls='short'}else if(score<=-25){label='偏空';cls='short'}const sig=[ks,rs,ms,es].filter(x=>x!==0),dir=score>0?1:score<0?-1:0,agree=dir?sig.filter(x=>Math.sign(x)===dir).length:0;let risk='';if(R>=70)risk='RSI 過熱：偏多但不宜追高。';else if(R<=30)risk='RSI 超賣：偏空但要防急彈。';else if(K>=80&&D>=80)risk='KD 高檔鈍化／過熱，留意轉折。';else if(K<=20&&D<=20)risk='KD 低檔鈍化／超賣，留意反彈。';return{price:c[i],K,D,R,DIF,DEA,H,E5,E20,score,label,cls,agree,total:sig.length,risk,parts}}
 function validatePayload(j){if(!j?.ok)throw new Error(j?.message||j?.error||'TWSE API 失敗');if(j.provider!=='TWSE'||j.yahooUsed!==false)throw new Error('資料來源不是 TWSE，已拒絕分析');if(!j.quote)throw new Error('TWSE 即時報價缺失');if(marketOpenTW()&&Number.isFinite(j.staleMs)&&j.staleMs>180000)throw new Error(`TWSE 盤中資料已超過 ${Math.round(j.staleMs/1000)} 秒，停止判斷`);return j}
-async function fetchTWSE(code,iv){const u=`${API}?code=${encodeURIComponent(code)}&interval=${encodeURIComponent(iv)}&_=${Date.now()}`;const r=await fetch(u,{cache:'no-store'});let j;try{j=await r.json()}catch{throw new Error(`TWSE API 回傳格式錯誤（HTTP ${r.status}）`)}if(!r.ok)throw new Error(j?.message||j?.error||`HTTP ${r.status}`);return validatePayload(j)}
-function render(j,a,iv){
-  const q=j.quote;$('symbol').textContent=`${q.code||''} ${q.name||''} · ${iv} · TWSE`;$('price').textContent=fmt(Number(q.price),2);$('score').textContent=a.score;$('signal').textContent=a.label;$('signal').className='signal '+a.cls;$('meter').style.width=`${Math.max(0,Math.min(100,(a.score+100)/2))}%`;
-  const st=Number.isFinite(q.sourceTime)?new Date(q.sourceTime):null,stale=Number.isFinite(j.staleMs)?Math.round(j.staleMs/1000):null;$('fresh').textContent=marketOpenTW()?(stale!=null?`${stale}s 前`:'TWSE 即時'):'TWSE 收盤/盤外';$('fresh').className='badge '+((!marketOpenTW()||stale==null||stale<=180)?'ok':'bad');
-  $('summary').textContent=`${a.parts.join(' · ')}；${a.agree}/${a.total} 指標同向。${a.risk?' '+a.risk:''} K線 ${j.barCount} 根${st?'；報價時間 '+st.toLocaleTimeString('zh-TW',{hour12:false}):''}`;
-  $('kd').textContent=`K ${fmt(a.K,1)} / D ${fmt(a.D,1)}`;$('kdText').textContent=a.K>a.D?'K 在 D 上方，短線偏多':'K 在 D 下方，短線偏空';
-  $('rsi').textContent=fmt(a.R,1);$('rsiText').textContent=a.R>=70?'超買區':a.R<=30?'超賣區':a.R>=55?'偏強':a.R<=45?'偏弱':'中性';
-  $('macd').textContent=`${fmt(a.DIF,3)} / ${fmt(a.DEA,3)}`;$('macdText').textContent=a.DIF>a.DEA?(a.H>0?'多方柱體':'DIF 上穿訊號線'):(a.H<0?'空方柱體':'DIF 在訊號線下');
-  $('ema').textContent=`${fmt(a.E5,2)} / ${fmt(a.E20,2)}`;$('emaText').textContent=a.E5>a.E20?'EMA5 > EMA20，多頭排列':'EMA5 < EMA20，空頭排列';
-}
-async function analyze(iv=$('interval').value){clearNotice();const code=$('code').value.trim();if(!/^\d{4,6}$/.test(code)){setNotice('請輸入 4～6 位上市股票代號。','badbox');return null}setBusy(true);try{const j=await fetchTWSE(code,iv),a=calc(j.bars);render(j,a,iv);setNotice(`TWSE 官方資料取得成功｜${j.quote.code} ${j.quote.name||''}｜${j.barCount} 根 ${iv} K 線`,'okbox');return{j,a}}catch(e){$('score').textContent='—';$('signal').textContent='停止判斷';$('signal').className='signal neutral';setNotice(String(e?.message||e),'badbox');return null}finally{setBusy(false)}}
+async function fetchTWSE(code,iv){const r=await fetch(`${API}?code=${encodeURIComponent(code)}&interval=${encodeURIComponent(iv)}&_=${Date.now()}`,{cache:'no-store'});let j;try{j=await r.json()}catch{throw new Error(`TWSE API 回傳格式錯誤（HTTP ${r.status}）`)}if(!r.ok)throw new Error(j?.message||j?.error||`HTTP ${r.status}`);return validatePayload(j)}
+function barAvailability(j,iv){if(iv==='1d')return;if(j.barStatus==='twse_intraday_chart_unavailable_after_hours')throw new Error('TWSE MIS 盤後不提供個股分時圖資料。請改用「日 K」；盤中再使用 5／15／60 分分析。');if(!j.barCount)throw new Error('TWSE 目前沒有可用的分時 K 線。');}
+function render(j,a,iv){const q=j.quote;$('symbol').textContent=`${q.code||''} ${q.name||''} · ${iv} · TWSE`;$('price').textContent=fmt(Number(q.price),2);$('score').textContent=a.score;$('signal').textContent=a.label;$('signal').className='signal '+a.cls;$('meter').style.width=`${Math.max(0,Math.min(100,(a.score+100)/2))}%`;const st=Number.isFinite(q.sourceTime)?new Date(q.sourceTime):null,stale=Number.isFinite(j.staleMs)?Math.round(j.staleMs/1000):null;$('fresh').textContent=marketOpenTW()?(stale!=null?`${stale}s 前`:'TWSE 即時'):'TWSE 收盤／盤外';$('fresh').className='badge '+((!marketOpenTW()||stale==null||stale<=180)?'ok':'bad');$('summary').textContent=`${a.parts.join(' · ')}；${a.agree}/${a.total} 指標同向。${a.risk?' '+a.risk:''} K線 ${j.barCount} 根${st?'；報價時間 '+st.toLocaleTimeString('zh-TW',{hour12:false,timeZone:'Asia/Taipei'}):''}`;$('kd').textContent=`K ${fmt(a.K,1)} / D ${fmt(a.D,1)}`;$('kdText').textContent=a.K>a.D?'K 在 D 上方，短線偏多':'K 在 D 下方，短線偏空';$('rsi').textContent=fmt(a.R,1);$('rsiText').textContent=a.R>=70?'超買區':a.R<=30?'超賣區':a.R>=55?'偏強':a.R<=45?'偏弱':'中性';$('macd').textContent=`${fmt(a.DIF,3)} / ${fmt(a.DEA,3)}`;$('macdText').textContent=a.DIF>a.DEA?(a.H>0?'多方柱體':'DIF 上穿訊號線'):(a.H<0?'空方柱體':'DIF 在訊號線下');$('ema').textContent=`${fmt(a.E5,2)} / ${fmt(a.E20,2)}`;$('emaText').textContent=a.E5>a.E20?'EMA5 > EMA20，多頭排列':'EMA5 < EMA20，空頭排列'}
+async function analyze(iv=$('interval').value){clearNotice();const code=$('code').value.trim();if(!/^\d{4,6}$/.test(code)){setNotice('請輸入 4～6 位上市股票代號。','badbox');return null}setBusy(true);try{const j=await fetchTWSE(code,iv);barAvailability(j,iv);const a=calc(j.bars);render(j,a,iv);setNotice(`TWSE 官方資料取得成功｜${j.quote.code} ${j.quote.name||''}｜${j.barCount} 根 ${iv} K 線`,'okbox');return{j,a}}catch(e){$('score').textContent='—';$('signal').textContent='停止判斷';$('signal').className='signal neutral';setNotice(String(e?.message||e),'badbox');return null}finally{setBusy(false)}}
 $('analyze').addEventListener('click',()=>analyze());$('code').addEventListener('keydown',e=>{if(e.key==='Enter')analyze()});
-$('multi').addEventListener('click',async()=>{clearNotice();const code=$('code').value.trim();if(!/^\d{4,6}$/.test(code)){setNotice('請輸入正確上市股票代號。','badbox');return}setBusy(true);$('tfCard').style.display='block';try{const ivs=['5m','15m','60m'],out=[];for(const iv of ivs){const j=await fetchTWSE(code,iv),a=calc(j.bars);out.push({iv,j,a});$(`tf${iv.replace('m','')}`).textContent=`${a.label} ${a.score}`;$(`tf${iv.replace('m','')}`).className=a.cls}const dirs=out.map(x=>Math.sign(x.a.score)),bull=dirs.filter(x=>x>0).length,bear=dirs.filter(x=>x<0).length;let text='週期分歧，降低出手權重。';if(bull===3)text='5/15/60 分全部偏多：多方共振。';else if(bear===3)text='5/15/60 分全部偏空：空方共振。';else if(bull>=2)text='兩個以上週期偏多：多方較有優勢。';else if(bear>=2)text='兩個以上週期偏空：空方較有優勢。';$('tfSummary').textContent=text;render(out[0].j,out[0].a,'5m');setNotice(`TWSE 多週期分析完成｜${text}`,'okbox')}catch(e){setNotice(String(e?.message||e),'badbox')}finally{setBusy(false)}});
-const p=new URLSearchParams(location.search);if(p.get('code'))$('code').value=p.get('code');if(p.get('interval'))$('interval').value=p.get('interval');
+$('multi').addEventListener('click',async()=>{clearNotice();const code=$('code').value.trim();if(!/^\d{4,6}$/.test(code)){setNotice('請輸入正確上市股票代號。','badbox');return}if(!marketOpenTW()){setNotice('TWSE MIS 盤後已關閉分時圖，無法用純 TWSE 資料做 5／15／60 分共振。請先使用日 K；盤中再執行共振。','badbox');return}setBusy(true);$('tfCard').style.display='block';try{const ivs=['5m','15m','60m'],out=[];for(const iv of ivs){try{const j=await fetchTWSE(code,iv);barAvailability(j,iv);const a=calc(j.bars);out.push({iv,j,a});$(`tf${iv.replace('m','')}`).textContent=`${a.label} ${a.score}`;$(`tf${iv.replace('m','')}`).className=a.cls}catch(e){$(`tf${iv.replace('m','')}`).textContent='資料不足';$(`tf${iv.replace('m','')}`).className='neutral'}}if(out.length<2){$('tfSummary').textContent='目前可計算的 TWSE 官方週期不足 2 個，不產生共振判斷。';setNotice('TWSE 分時歷史 K 線不足，已停止共振判斷。','badbox');return}const dirs=out.map(x=>Math.sign(x.a.score)),bull=dirs.filter(x=>x>0).length,bear=dirs.filter(x=>x<0).length;let text='週期分歧，降低出手權重。';if(bull===out.length)text='可用週期全部偏多：多方共振。';else if(bear===out.length)text='可用週期全部偏空：空方共振。';else if(bull>bear)text='可用週期多方較有優勢。';else if(bear>bull)text='可用週期空方較有優勢。';$('tfSummary').textContent=text;render(out[0].j,out[0].a,out[0].iv);setNotice(`TWSE 多週期分析完成｜${text}`,'okbox')}finally{setBusy(false)}});
+const p=new URLSearchParams(location.search);if(p.get('code'))$('code').value=p.get('code');if(p.get('interval'))$('interval').value=p.get('interval');else if(!marketOpenTW())$('interval').value='1d';if(!marketOpenTW())setNotice('目前為盤後模式：TWSE MIS 不提供分時圖，已預設「日 K」。盤中再使用 5／15／60 分。','warn');
 </script>
 </body>
 </html>
