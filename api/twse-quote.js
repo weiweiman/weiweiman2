@@ -15,10 +15,13 @@ module.exports = async function handler(req, res) {
     const text = await r.text();
     let json = null;
     try { json = JSON.parse(text); } catch {}
+    const setCookie = r.headers.get('set-cookie');
     return res.status(200).json({
       ok: r.ok,
       upstreamStatus: r.status,
       contentType: r.headers.get('content-type'),
+      hasSetCookie: !!setCookie,
+      setCookie: setCookie || null,
       length: text.length,
       parsed: !!json,
       sample: json ? json : text.slice(0, 1000)
