@@ -1,4 +1,4 @@
-const CACHE='tw-daytrade-pro-v2.1.0';
+const CACHE='tw-daytrade-pro-v2.2.0';
 const SHELL=['./','./index.html','./technical.html','./manifest.webmanifest','./icon.svg'];
 
 self.addEventListener('install',event=>{
@@ -18,13 +18,13 @@ self.addEventListener('fetch',event=>{
   if(req.method!=='GET') return;
   const url=new URL(req.url);
 
-  // Never cache external market, chart or screener responses.
-  // External finance data must always come from the network so stale bars are not silently reused.
-  if(url.origin!==self.location.origin){
+  // Market/API data is always network-only. Never put quotes or bars into the PWA cache.
+  if(url.origin!==self.location.origin || url.pathname.startsWith('/api/')){
     event.respondWith(fetch(req));
     return;
   }
 
+  // Navigations are network-first so updated app pages win immediately.
   if(req.mode==='navigate'){
     event.respondWith(
       fetch(req)
@@ -38,6 +38,7 @@ self.addEventListener('fetch',event=>{
     return;
   }
 
+  // Static app shell can use cache-first with background refresh.
   event.respondWith(
     caches.match(req).then(cached=>{
       const fresh=fetch(req).then(resp=>{
