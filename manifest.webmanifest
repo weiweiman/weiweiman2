@@ -1,0 +1,15 @@
+{
+  "name": "台股即時當沖篩選台",
+  "short_name": "台股當沖",
+  "description": "台股即時當沖篩選台手機安裝版",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b1220",
+  "theme_color": "#0f766e",
+  "lang": "zh-TW",
+  "icons": [
+    {"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
