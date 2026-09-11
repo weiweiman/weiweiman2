@@ -1,15 +1,27 @@
 {
-  "name": "台股即時當沖篩選台",
-  "short_name": "台股當沖",
-  "description": "台股即時當沖篩選台手機安裝版",
+  "id": "./",
+  "name": "台股即時當沖 Pro",
+  "short_name": "台股當沖 Pro",
+  "description": "台股即時當沖篩選台手機 Pro 工作台",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait-primary",
-  "background_color": "#0b1220",
-  "theme_color": "#0f766e",
+  "background_color": "#06101e",
+  "theme_color": "#08111f",
   "lang": "zh-TW",
+  "categories": ["finance", "productivity"],
   "icons": [
     {"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ],
+  "shortcuts": [
+    {
+      "name": "開啟即時篩選",
+      "short_name": "即時篩選",
+      "description": "直接開啟台股即時當沖篩選畫面",
+      "url": "./?open=live",
+      "icons": [{"src":"./icon.svg","sizes":"any","type":"image/svg+xml"}]
+    }
   ]
 }
