@@ -3,55 +3,100 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0f766e">
+  <meta name="theme-color" content="#08111f">
+  <meta name="color-scheme" content="dark">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="台股當沖">
-  <title>台股即時當沖篩選台</title>
+  <meta name="apple-mobile-web-app-title" content="台股當沖 Pro">
+  <meta name="description" content="台股即時當沖篩選台手機 Pro 工作台">
+  <title>台股即時當沖 Pro</title>
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <style>
-    :root{color-scheme:dark;--bg:#0b1220;--card:#111827;--line:#243244;--text:#f8fafc;--muted:#94a3b8;--brand:#14b8a6;--brand2:#0f766e}
-    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;background:linear-gradient(180deg,#07111f,#0b1220);color:var(--text);min-height:100vh}
-    .wrap{max-width:720px;margin:auto;padding:28px 18px 40px}.badge{display:inline-flex;gap:8px;align-items:center;padding:7px 10px;border:1px solid #1f766e;border-radius:999px;color:#99f6e4;font-size:13px;background:#0f2c2a}
-    h1{font-size:30px;line-height:1.2;margin:18px 0 8px}.sub{color:var(--muted);line-height:1.7}.card{margin-top:22px;background:rgba(17,24,39,.92);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-    .btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;border-radius:14px;border:0;font-weight:800;font-size:16px;text-decoration:none;cursor:pointer;margin-top:12px}.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:white}.secondary{background:#182235;color:#e2e8f0;border:1px solid #334155}
-    .steps{margin:16px 0 0;padding-left:22px;color:#cbd5e1;line-height:1.8}.small{font-size:13px;color:var(--muted);line-height:1.6;margin-top:14px}.status{display:flex;gap:10px;align-items:center}.dot{width:10px;height:10px;border-radius:50%;background:#22c55e;box-shadow:0 0 14px #22c55e}
+    :root{color-scheme:dark;--bg:#06101e;--panel:#0f1a2b;--panel2:#111e31;--line:#24344b;--text:#f8fafc;--muted:#93a4ba;--brand:#14b8a6;--brand2:#0f766e;--green:#22c55e;--amber:#f59e0b;--red:#ef4444}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+    button,a{font:inherit}.app{min-height:100vh;display:flex;flex-direction:column}.top{position:sticky;top:0;z-index:20;background:rgba(6,16,30,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding:10px 12px}.toprow{display:flex;gap:10px;align-items:center;justify-content:space-between}.title{display:flex;align-items:center;gap:10px;min-width:0}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#14b8a6,#0f766e);display:grid;place-items:center;font-weight:900}.ttl{min-width:0}.ttl b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ttl span{font-size:11px;color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#0c1727;border-radius:999px;padding:7px 9px;font-size:12px;color:#dbeafe}.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}.dot.off{background:var(--red);box-shadow:0 0 10px var(--red)}
+    .toolbar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);background:#091525}.tool{min-height:43px;border-radius:12px;border:1px solid var(--line);background:#111e31;color:#e5edf8;font-weight:750;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;text-decoration:none}.tool.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));border-color:transparent;color:#fff}.tool:active{transform:translateY(1px)}
+    .safety{padding:9px 12px;background:#0b1727;border-bottom:1px solid var(--line);display:flex;gap:8px;overflow:auto;scrollbar-width:none}.chip{flex:0 0 auto;border:1px solid #2a3c55;background:#101d30;color:#cbd5e1;border-radius:999px;padding:6px 9px;font-size:11px}.chip.good{border-color:#165f55;color:#99f6e4;background:#0b2827}
+    .notice{display:none;margin:10px 12px 0;padding:11px 12px;border-radius:12px;border:1px solid #6b4a12;background:#2b200d;color:#fde68a;font-size:13px;line-height:1.5}.notice.show{display:block}
+    .screen{position:relative;flex:1;min-height:640px;background:#07111f}.screen iframe{display:block;width:100%;height:calc(100vh - 154px);min-height:640px;border:0;background:#07111f}.loading{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,#07111f,#0b1220);z-index:2;transition:opacity .25s}.loading.hide{opacity:0;pointer-events:none}.loader{width:34px;height:34px;border-radius:50%;border:3px solid #22324a;border-top-color:var(--brand);animation:spin .8s linear infinite;margin:auto}.loadtext{text-align:center;color:var(--muted);font-size:13px;margin-top:12px}@keyframes spin{to{transform:rotate(360deg)}}
+    .sheet{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:50;background:#0f1a2b;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 30px 80px rgba(0,0,0,.55);display:none}.sheet.show{display:block}.sheet h3{margin:0 0 8px;font-size:16px}.sheet p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}.sheet .row{display:flex;gap:8px;margin-top:12px}.sheet .row button{flex:1}
+    @media(min-width:900px){.app{max-width:1200px;margin:auto;border-left:1px solid var(--line);border-right:1px solid var(--line)}.screen iframe{height:calc(100vh - 154px)}}
   </style>
 </head>
 <body>
-<main class="wrap">
-  <div class="badge">PWA 手機安裝版</div>
-  <h1>台股即時當沖篩選台</h1>
-  <div class="sub">安裝到 Android / iPhone 主畫面後，可像 App 一樣快速啟動。即時行情仍由原篩選台提供，避免把離線快取誤當成最新報價。</div>
+<div class="app">
+  <header class="top">
+    <div class="toprow">
+      <div class="title"><div class="logo">TW</div><div class="ttl"><b>台股即時當沖 Pro</b><span>v2.0.0 · 手機盤中工作台</span></div></div>
+      <div class="pill"><span id="netdot" class="dot"></span><span id="nettext">連線中</span></div>
+    </div>
+  </header>
 
-  <section class="card">
-    <div class="status"><span class="dot"></span><strong>原篩選台服務</strong></div>
-    <a id="launch" class="btn primary" href="https://tw-daytrade-screener.jgw0616.chatgpt.site">開啟即時篩選台</a>
-    <button id="install" class="btn secondary" hidden>安裝手機 App</button>
-    <button id="ios" class="btn secondary" hidden>iPhone 加入主畫面教學</button>
-    <div class="small">目前這個 PWA 是安全啟動器：它不儲存即時股價資料；盤中請以原篩選台顯示的資料時間為準。</div>
-  </section>
+  <nav class="toolbar" aria-label="盤中工具列">
+    <button class="tool primary" id="refreshBtn" type="button">↻ 重新整理</button>
+    <button class="tool" id="fullscreenBtn" type="button">⛶ 全螢幕</button>
+    <a class="tool" id="openBtn" href="https://tw-daytrade-screener.jgw0616.chatgpt.site" target="_blank" rel="noopener">↗ 原站</a>
+    <button class="tool" id="installBtn" type="button">＋ 安裝</button>
+  </nav>
 
-  <section class="card">
-    <strong>安裝方式</strong>
-    <ol class="steps">
-      <li>Android：用 Chrome 開啟本頁，按「安裝手機 App」。</li>
-      <li>iPhone：用 Safari 開啟，按分享 →「加入主畫面」。</li>
-      <li>完成後桌面會出現「台股當沖」圖示。</li>
-    </ol>
-  </section>
-</main>
+  <div class="safety" aria-label="固定風控條件">
+    <span class="chip good">拒絕舊快取</span>
+    <span class="chip">≤ 300 元</span>
+    <span class="chip">排除漲停</span>
+    <span class="chip">排除處置股</span>
+    <span class="chip">排除大型股</span>
+    <span class="chip">高成交量優先</span>
+  </div>
+
+  <div id="offlineNotice" class="notice">目前裝置離線。App 外殼仍可開啟，但即時行情不可用；恢復網路後請按「重新整理」。</div>
+  <div id="frameNotice" class="notice">如果即時篩選畫面未顯示，請按上方「原站」直接開啟。這不會使用離線行情替代即時資料。</div>
+
+  <main class="screen" id="screen">
+    <div class="loading" id="loading"><div><div class="loader"></div><div class="loadtext">正在連線即時篩選台…<br>不使用離線股價替代</div></div></div>
+    <iframe id="liveFrame" title="台股即時當沖篩選台" src="https://tw-daytrade-screener.jgw0616.chatgpt.site" allow="fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </main>
+</div>
+
+<div class="sheet" id="installSheet">
+  <h3>安裝台股當沖 Pro</h3>
+  <p id="installHelp">Android 請用 Chrome 安裝；iPhone 請用 Safari 的「分享 → 加入主畫面」。</p>
+  <div class="row"><button class="tool primary" id="nativeInstall" type="button">安裝 App</button><button class="tool" id="closeSheet" type="button">關閉</button></div>
+</div>
+
 <script>
-let deferredPrompt;
-const installBtn=document.getElementById('install');
-const iosBtn=document.getElementById('ios');
-const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(!standalone)installBtn.hidden=false;});
-installBtn.addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;installBtn.hidden=true;});
-if(isiOS&&!standalone){iosBtn.hidden=false;iosBtn.onclick=()=>alert('Safari：點底部「分享」→「加入主畫面」→「加入」。');}
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));}
+const LIVE='https://tw-daytrade-screener.jgw0616.chatgpt.site';
+const frame=document.getElementById('liveFrame');
+const loading=document.getElementById('loading');
+const offlineNotice=document.getElementById('offlineNotice');
+const frameNotice=document.getElementById('frameNotice');
+const netdot=document.getElementById('netdot');
+const nettext=document.getElementById('nettext');
+const installSheet=document.getElementById('installSheet');
+const nativeInstall=document.getElementById('nativeInstall');
+let deferredPrompt=null;
+let frameLoaded=false;
+
+function updateNetwork(){const on=navigator.onLine;netdot.classList.toggle('off',!on);nettext.textContent=on?'網路正常':'離線';offlineNotice.classList.toggle('show',!on)}
+window.addEventListener('online',updateNetwork);window.addEventListener('offline',updateNetwork);updateNetwork();
+
+frame.addEventListener('load',()=>{frameLoaded=true;loading.classList.add('hide');setTimeout(()=>frameNotice.classList.remove('show'),600)});
+setTimeout(()=>{if(!frameLoaded){loading.classList.add('hide');frameNotice.classList.add('show')}},9000);
+
+document.getElementById('refreshBtn').addEventListener('click',()=>{if(!navigator.onLine){offlineNotice.classList.add('show');return}frameLoaded=false;loading.classList.remove('hide');frameNotice.classList.remove('show');frame.src=LIVE+'?r='+Date.now();setTimeout(()=>{if(!frameLoaded){loading.classList.add('hide');frameNotice.classList.add('show')}},9000)});
+
+document.getElementById('fullscreenBtn').addEventListener('click',async()=>{try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen()}else{await document.exitFullscreen()}}catch(e){window.open(LIVE,'_blank','noopener')}});
+
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e});
+document.getElementById('installBtn').addEventListener('click',()=>{installSheet.classList.add('show');const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);document.getElementById('installHelp').textContent=isiOS?'iPhone / iPad：請用 Safari，點「分享」→「加入主畫面」→「加入」。':'Android：按下「安裝 App」。若沒有跳出視窗，請用 Chrome 選單的「安裝應用程式」。';nativeInstall.style.display=isiOS?'none':'flex'});
+document.getElementById('closeSheet').addEventListener('click',()=>installSheet.classList.remove('show'));
+nativeInstall.addEventListener('click',async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;installSheet.classList.remove('show')}else{document.getElementById('installHelp').textContent='若沒有自動安裝視窗，請開啟 Chrome 右上角選單 →「安裝應用程式」或「加入主畫面」。'}});
+window.addEventListener('appinstalled',()=>{installSheet.classList.remove('show');deferredPrompt=null});
+
+if('serviceWorker' in navigator){window.addEventListener('load',async()=>{try{const reg=await navigator.serviceWorker.register('./sw.js');reg.update()}catch(e){console.warn('SW registration failed',e)}})}
+
+const params=new URLSearchParams(location.search);if(params.get('open')==='live'){setTimeout(()=>document.getElementById('refreshBtn').click(),250)}
 </script>
 </body>
 </html>
